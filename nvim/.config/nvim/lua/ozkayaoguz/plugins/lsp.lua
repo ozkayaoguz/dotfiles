@@ -32,6 +32,7 @@ return {
                 vim.keymap.set("n", "<leader>r", function() vim.lsp.buf.rename() end, opts)
                 vim.keymap.set({ "n", "v" }, "<leader>a", function() vim.lsp.buf.code_action() end, opts)
                 vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, opts)
+                vim.keymap.set("n", "<leader>q", function() vim.diagnostic.open_float() end, opts)
             end,
         })
 
