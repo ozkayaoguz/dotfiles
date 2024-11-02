@@ -33,6 +33,11 @@ return {
                 vim.keymap.set({ "n", "v" }, "<leader>a", function() vim.lsp.buf.code_action() end, opts)
                 vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, opts)
                 vim.keymap.set("n", "<leader>q", function() vim.diagnostic.open_float() end, opts)
+
+                vim.keymap.set("n", "<leader>i", function()
+                    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ 0 }), { 0 })
+                end, opts)
+
             end,
         })
 
