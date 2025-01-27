@@ -3,6 +3,7 @@ vim.api.nvim_exec2("language en_US", {})
 vim.opt.mouse = ""
 
 vim.opt.ignorecase = true
+vim.opt.smartcase = true
 
 vim.opt.nu = true
 vim.opt.relativenumber = true
