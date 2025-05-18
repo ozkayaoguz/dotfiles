@@ -1,1 +1,3 @@
-Prerequisite: install [ripgrep](https://github.com/BurntSushi/ripgrep).
+Prerequisites: 
+  - [ripgrep](https://github.com/BurntSushi/ripgrep).
+  - cmake
