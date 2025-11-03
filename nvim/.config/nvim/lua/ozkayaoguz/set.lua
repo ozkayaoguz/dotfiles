@@ -1,4 +1,4 @@
-vim.api.nvim_exec2("language en_US", {})
+vim.api.nvim_exec2("language en_US.UTF-8", {})
 
 vim.opt.mouse = ""
 

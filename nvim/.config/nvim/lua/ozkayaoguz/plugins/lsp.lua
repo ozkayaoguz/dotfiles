@@ -1,16 +1,16 @@
 return {
     "neovim/nvim-lspconfig",
     dependencies = {
-        "neovim/nvim-lspconfig",
         "williamboman/mason.nvim",
         "williamboman/mason-lspconfig.nvim",
-        "hrsh7th/nvim-cmp",
         "hrsh7th/cmp-nvim-lsp",
         "hrsh7th/cmp-buffer",
         "hrsh7th/cmp-path",
-        "saadparwaiz1/cmp_luasnip",
+        "hrsh7th/cmp-cmdline",
+        "hrsh7th/nvim-cmp",
         "L3MON4D3/LuaSnip",
-        "rafamadriz/friendly-snippets",
+        "saadparwaiz1/cmp_luasnip",
+        "j-hui/fidget.nvim",
     },
     config = function()
         vim.api.nvim_create_autocmd("LspAttach", {
@@ -37,7 +37,6 @@ return {
                 vim.keymap.set("n", "<leader>i", function()
                     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ 0 }), { 0 })
                 end, opts)
-
             end,
         })
 
@@ -77,10 +76,6 @@ return {
 
         local cmp = require("cmp")
         local cmp_select = { behavior = cmp.SelectBehavior.Select }
-
-        -- this is the function that loads the extra snippets to luasnip
-        -- from rafamadriz/friendly-snippets
-        require("luasnip.loaders.from_vscode").lazy_load()
 
         cmp.setup({
             sources = {
