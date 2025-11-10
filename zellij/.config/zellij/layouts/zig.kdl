@@ -9,11 +9,11 @@ layout{
         pane stacked=true {
             zig {
                 name "test"
-                args "build test"
+                args "build" "test"
             }
             zig {
                 name "run"
-                args "build run"
+                args "build" "run"
                 focus true
                 expanded true
             }
