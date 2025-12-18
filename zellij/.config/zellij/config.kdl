@@ -1,6 +1,6 @@
 keybinds clear-defaults=true {
     locked {
-        bind "Ctrl g" { SwitchToMode "normal"; }
+        bind "Ctrl a" { SwitchToMode "normal"; }
     }
     normal {
         bind "p" { SwitchToMode "pane"; }
@@ -152,7 +152,7 @@ keybinds clear-defaults=true {
         bind "Alt [" { PreviousSwapLayout; }
         bind "Alt ]" { NextSwapLayout; }
         bind "Alt f" { ToggleFloatingPanes; }
-        bind "Ctrl g" { SwitchToMode "locked"; }
+        bind "Ctrl a" { SwitchToMode "locked"; }
         bind "Alt h" { MoveFocusOrTab "left"; }
         bind "Alt i" { MoveTab "left"; }
         bind "Alt j" { MoveFocus "down"; }
@@ -276,8 +276,7 @@ web_client {
  
 // Choose the theme that is specified in the themes section.
 // Default: default
-// 
-// theme "dracula"
+theme "gruvbox-dark"
  
 // Choose the base input mode of zellij.
 // Default: normal
