@@ -12,6 +12,8 @@ input {
 
     touchpad {
         tap // Enable tap-to-click
+        dwt // Disable when typing
+        drag-lock // Lifting the finger off for a short time while dragging will not drop the dragged item
         natural-scroll // Enable natural (macOS-style) scrolling
     }
 
