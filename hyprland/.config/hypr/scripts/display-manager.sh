@@ -49,18 +49,39 @@ parse_monitors() {
 apply_indices() {
     check_and_refresh
     mapfile -t CACHED_MONS < "$STATE_FILE"
-    INPUT_IDS=",$1,"
+    
+    # SAFETY CHECK: If requested index doesn't exist or no index provided, 
+    # fallback to Index 1 (Primary) to prevent total black screen
+    local REQUESTED_IDS="$1"
+    local VALID_REQUEST=false
+    
+    for id in ${REQUESTED_IDS//,/ }; do
+        if [ "$id" -le "${#CACHED_MONS[@]}" ] && [ "$id" -gt 0 ]; then
+            VALID_REQUEST=true
+        fi
+    done
+
+    # If the user tries to set an index that doesn't exist (like --set 2 when only 1 exists)
+    # we force Index 1 to be active so the user isn't stuck with a black screen.
+    if [ "$VALID_REQUEST" = false ]; then
+        REQUESTED_IDS="1"
+        notify-send -u critical "Display Manager" "Invalid Index: Falling back to Primary"
+    fi
+
+    INPUT_IDS=",$REQUESTED_IDS,"
+
     for i in "${!CACHED_MONS[@]}"; do
         # Extract only the NAME part for hyprctl command
         NAME=$(echo "${CACHED_MONS[$i]}" | cut -d'|' -f1)
         USER_IDX=$((i+1))
+        
         if [[ "$INPUT_IDS" == *",$USER_IDX,"* ]]; then
             hyprctl keyword monitor "$NAME,preferred,auto,1"
         else
             hyprctl keyword monitor "$NAME,disable"
         fi
     done
-    show_active_notify "$1"
+    show_active_notify "$REQUESTED_IDS"
 }
 
 case $1 in
