@@ -17,10 +17,10 @@ binds {
     Mod+Shift+Q                         hotkey-overlay-title="Session Menu: noctalia sessionMenu" { spawn-sh "qs -c noctalia-shell ipc call sessionMenu toggle"; }
 
     // ─── Display Controls ───
-    Mod+Shift+0                         { spawn "~/.config/niri/scripts/display.manager.sh" "--list"; } // List/Show current indices without changing anythingt                                                  │
-    Mod+Shift+1                         { spawn "~/.config/niri/scripts/display.manager.sh" "--set" "1"; } // Only Primary (Laptop or First Monitor)                                                               │
-    Mod+Shift+2                         { spawn "~/.config/niri/scripts/display.manager.sh" "--set" "2"; } // Only External 1 (HDMI/DP)                                                                            │
-    Mod+Shift+3                         { spawn "~/.config/niri/scripts/display.manager.sh" "--set" "1,2"; } // Combination: Primary + External 1 (Extend Mode)                                                    │
+    Mod+Shift+0                         hotkey-overlay-title="List monitors and their indices." { spawn "~/.config/niri/scripts/display-manager.sh" "--list"; }
+    Mod+Shift+1                         hotkey-overlay-title="Enable only the primary monitor." { spawn "~/.config/niri/scripts/display-manager.sh" "--set" "1"; }
+    Mod+Shift+2                         hotkey-overlay-title="Enable only the secondary monitor" { spawn "~/.config/niri/scripts/display-manager.sh" "--set" "2"; }
+    Mod+Shift+3                         hotkey-overlay-title="Enable the primary and secondary monitors." { spawn "~/.config/niri/scripts/display-manager.sh" "--set" "1,2"; }
 
     // ─── Media Controls ───
     XF86AudioRaiseVolume                allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume increase"; }

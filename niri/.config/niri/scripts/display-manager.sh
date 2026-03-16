@@ -1,12 +1,11 @@
 #!/bin/bash
 # --- CONFIGURATION ---
-STATE_FILE="/tmp/hypr_mon_data"
-SIG_FILE="/tmp/hypr_mon_signature"
+STATE_FILE="/tmp/niri_mon_data"
+SIG_FILE="/tmp/niri_mon_signature"
 NOTIFY_DURATION=1000
 
 get_sig() { cat /sys/class/drm/*/status; }
 
-# Centralized hardware change check
 check_and_refresh() {
     [[ "$(get_sig)" != "$(cat "$SIG_FILE" 2>/dev/null)" ]] && parse_monitors
 }
@@ -33,14 +32,11 @@ show_all_notify() {
 }
 
 parse_monitors() {
-    MON_JSON=$(hyprctl monitors all -j)
-    # Identify Internal (eDP)
-    INT_NAME=$(echo "$MON_JSON" | jq -r '.[] | select(.name | startswith("eDP")).name')
-    [ -z "$INT_NAME" ] && INT_NAME=$(echo "$MON_JSON" | jq -r '.[0].name')
-    INT_DESC=$(echo "$MON_JSON" | jq -r ".[] | select(.name == \"$INT_NAME\").model")
-    # Identify Externals (Sorted)
-    EXT_DATA=$(echo "$MON_JSON" | jq -r ".[] | select(.name != \"$INT_NAME\") | .name + \"|\" + .model" | sort)
-    # Save indexed data: NAME|MODEL
+    MON_JSON=$(niri msg -j outputs)
+    INT_NAME=$(echo "$MON_JSON" | jq -r 'to_entries[] | select(.key | startswith("eDP")).key' | head -n1)
+    [ -z "$INT_NAME" ] && INT_NAME=$(echo "$MON_JSON" | jq -r 'keys[0]')
+    INT_DESC=$(echo "$MON_JSON" | jq -r ".\"$INT_NAME\".make + \" \" + .\"$INT_NAME\".model")
+    EXT_DATA=$(echo "$MON_JSON" | jq -r "to_entries[] | select(.key != \"$INT_NAME\") | .key + \"|\" + .value.make + \" \" + .value.model" | sort)
     echo "$INT_NAME|$INT_DESC" > "$STATE_FILE"
     [ -n "$EXT_DATA" ] && echo "$EXT_DATA" >> "$STATE_FILE"
     get_sig > "$SIG_FILE"
@@ -51,13 +47,12 @@ apply_indices() {
     mapfile -t CACHED_MONS < "$STATE_FILE"
     INPUT_IDS=",$1,"
     for i in "${!CACHED_MONS[@]}"; do
-        # Extract only the NAME part for hyprctl command
         NAME=$(echo "${CACHED_MONS[$i]}" | cut -d'|' -f1)
         USER_IDX=$((i+1))
         if [[ "$INPUT_IDS" == *",$USER_IDX,"* ]]; then
-            hyprctl keyword monitor "$NAME,preferred,auto,1"
+            niri msg output "$NAME" on
         else
-            hyprctl keyword monitor "$NAME,disable"
+            niri msg output "$NAME" off
         fi
     done
     show_active_notify "$1"
