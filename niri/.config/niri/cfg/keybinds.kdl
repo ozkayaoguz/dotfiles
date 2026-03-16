@@ -16,6 +16,12 @@ binds {
     Mod+ALT+L                           hotkey-overlay-title="Lock Screen: noctalia lock" { spawn-sh "qs -c noctalia-shell ipc call lockScreen lock"; }
     Mod+Shift+Q                         hotkey-overlay-title="Session Menu: noctalia sessionMenu" { spawn-sh "qs -c noctalia-shell ipc call sessionMenu toggle"; }
 
+    // ─── Display Controls ───
+    Mod+Shift+0                         { spawn "~/.config/niri/scripts/display.manager.sh" "--list"; } // List/Show current indices without changing anythingt                                                  │
+    Mod+Shift+1                         { spawn "~/.config/niri/scripts/display.manager.sh" "--set" "1"; } // Only Primary (Laptop or First Monitor)                                                               │
+    Mod+Shift+2                         { spawn "~/.config/niri/scripts/display.manager.sh" "--set" "2"; } // Only External 1 (HDMI/DP)                                                                            │
+    Mod+Shift+3                         { spawn "~/.config/niri/scripts/display.manager.sh" "--set" "1,2"; } // Combination: Primary + External 1 (Extend Mode)                                                    │
+
     // ─── Media Controls ───
     XF86AudioRaiseVolume                allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume increase"; }
     XF86AudioLowerVolume                allow-when-locked=true { spawn-sh "qs -c noctalia-shell ipc call volume decrease"; }
@@ -57,14 +63,22 @@ binds {
     Mod+CTRL+End                        { move-column-to-last; }
 
     Mod+Shift+Left                      { focus-monitor-left; }
+    Mod+Shift+H                         { focus-monitor-left; }
     Mod+Shift+Right                     { focus-monitor-right; }
+    Mod+Shift+L                         { focus-monitor-right; }
     Mod+Shift+UP                        { focus-monitor-up; }
+    Mod+Shift+K                         { focus-monitor-up; }
     Mod+Shift+Down                      { focus-monitor-down; }
+    Mod+Shift+J                         { focus-monitor-down; }
 
     Mod+Shift+CTRL+Left                 { move-column-to-monitor-left; }
+    Mod+Shift+CTRL+H                    { move-column-to-monitor-left; }
     Mod+Shift+CTRL+Right                { move-column-to-monitor-right; }
+    Mod+Shift+CTRL+L                    { move-column-to-monitor-right; }
     Mod+Shift+CTRL+UP                   { move-column-to-monitor-up; }
+    Mod+Shift+CTRL+K                    { move-column-to-monitor-up; }
     Mod+Shift+CTRL+Down                 { move-column-to-monitor-down; }
+    Mod+Shift+CTRL+J                    { move-column-to-monitor-down; }
 
     // ─── Workspace Switching ───
     Mod+WheelScrollDown                 cooldown-ms=150 { focus-workspace-down; }
