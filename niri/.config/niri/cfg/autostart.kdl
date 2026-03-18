@@ -1,5 +1,1 @@
-// ────────────── Startup Applications ──────────────
-// https://github.com/YaLTeR/niri/wiki/Configuration:-Miscellaneous#spawn-sh-at-startup
-
-spawn-sh-at-startup "qs -c noctalia-shell"
-spawn-at-startup "~/.config/niri/scripts/display-manager.sh" "--init"
+spawn-at-startup "dms" "run"
