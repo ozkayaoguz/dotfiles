@@ -49,6 +49,16 @@ return {
                         { bufnr = event.buf }
                     )
                 end, opts)
+
+                -- Built-in LSP document highlighting (replaces vim-illuminate)
+                vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+                    buffer = event.buf,
+                    callback = vim.lsp.buf.document_highlight,
+                })
+                vim.api.nvim_create_autocmd("CursorMoved", {
+                    buffer = event.buf,
+                    callback = vim.lsp.buf.clear_references,
+                })
             end,
         })
 
