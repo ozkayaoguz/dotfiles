@@ -10,6 +10,12 @@ binds {
     Mod+Shift+P { power-off-monitors; }
     Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
 
+    // === Display Controls ===
+    Mod+Shift+0 hotkey-overlay-title="List monitors and their indices." { spawn "~/.config/niri/scripts/display-manager.sh" "--list"; }
+    Mod+Shift+1 hotkey-overlay-title="Enable only the primary monitor." { spawn "~/.config/niri/scripts/display-manager.sh" "--set" "1"; }
+    Mod+Shift+2 hotkey-overlay-title="Enable only the secondary monitor" { spawn "~/.config/niri/scripts/display-manager.sh" "--set" "2"; }
+    Mod+Shift+3 hotkey-overlay-title="Enable the primary and secondary monitors." { spawn "~/.config/niri/scripts/display-manager.sh" "--set" "1,2"; }
+
     // === Window Management ===
     Mod+Q repeat=false { close-window; }
     Mod+F { maximize-column; }
@@ -25,10 +31,8 @@ binds {
     Mod+J     { focus-window-down; }
     Mod+K     { focus-window-up; }
     Mod+L     { focus-column-right; }
-    Mod+WheelScrollRight        { focus-column-right; }
-    Mod+WheelScrollLeft         { focus-column-left; }
-    Mod+Shift+WheelScrollDown   { focus-column-right; }
-    Mod+Shift+WheelScrollUp     { focus-column-left; }
+    Mod+WheelScrollDown   { focus-column-right; }
+    Mod+WheelScrollUp     { focus-column-left; }
 
     // === Window Movement ===
     Mod+Ctrl+Left  { move-column-left; }
@@ -39,10 +43,8 @@ binds {
     Mod+Ctrl+J     { move-window-down; }
     Mod+Ctrl+K     { move-window-up; }
     Mod+Ctrl+L     { move-column-right; }
-    Mod+Ctrl+WheelScrollRight       { move-column-right; }
-    Mod+Ctrl+WheelScrollLeft        { move-column-left; }
-    Mod+Ctrl+Shift+WheelScrollDown  { move-column-right; }
-    Mod+Ctrl+Shift+WheelScrollUp    { move-column-left; }
+    Mod+Ctrl+WheelScrollDown  { move-column-right; }
+    Mod+Ctrl+WheelScrollUp    { move-column-left; }
 
     // === Column Navigation ===
     Mod+Home        { focus-column-first; }
@@ -77,10 +79,10 @@ binds {
     Mod+D           { focus-workspace-down; }
     Mod+Ctrl+U      { move-column-to-workspace-up; }
     Mod+Ctrl+D      { move-column-to-workspace-down; }
-    Mod+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
-    Mod+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
-    Mod+Ctrl+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
-    Mod+Ctrl+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
+    Mod+Alt+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
+    Mod+Alt+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
+    Mod+Alt+Ctrl+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
+    Mod+Alt+Ctrl+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
 
     // === Numbered Workspaces ===
     Mod+1 { focus-workspace 1; }
