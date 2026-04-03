@@ -3,13 +3,23 @@ return {
     dependencies = {
         "williamboman/mason.nvim",
         "williamboman/mason-lspconfig.nvim",
-        "hrsh7th/cmp-nvim-lsp",
-        "hrsh7th/cmp-buffer",
-        "hrsh7th/cmp-path",
-        "hrsh7th/cmp-cmdline",
-        "hrsh7th/nvim-cmp",
-        "L3MON4D3/LuaSnip",
-        "saadparwaiz1/cmp_luasnip",
+        {
+            "saghen/blink.cmp",
+            version = "1.*",
+            opts = {
+                keymap = {
+                    preset = "default",
+                    ["<CR>"] = { "accept", "fallback" },
+                },
+                appearance = { use_nvim_cmp_as_default = false },
+                sources = {
+                    default = { "lsp", "path", "snippets", "buffer" },
+                },
+                completion = {
+                    documentation = { auto_show = true },
+                },
+            },
+        },
         "j-hui/fidget.nvim",
     },
     config = function()
@@ -25,7 +35,6 @@ return {
                 vim.keymap.set("n", "gI", function() builtin.lsp_implementations() end, opts)
                 vim.keymap.set("n", "<leader>D", function() builtin.lsp_type_definitions() end, opts)
                 vim.keymap.set("n", "<leader>ds", function() builtin.lsp_document_symbols() end, opts)
-                vim.keymap.set("n", "<leader>df", function() vim.lsp.buf.format() end, opts)
                 vim.keymap.set("n", "<leader>dd", function() builtin.diagnostics({ bufnr = 0 }) end, opts)
                 vim.keymap.set("n", "<leader>ws", function() builtin.lsp_dynamic_workspace_symbols() end, opts)
                 vim.keymap.set("n", "<leader>wd", function() builtin.diagnostics() end, opts)
@@ -35,68 +44,83 @@ return {
                 vim.keymap.set("n", "<leader>q", function() vim.diagnostic.open_float() end, opts)
 
                 vim.keymap.set("n", "<leader>i", function()
-                    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ 0 }), { 0 })
+                    vim.lsp.inlay_hint.enable(
+                        not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }),
+                        { bufnr = event.buf }
+                    )
                 end, opts)
+
+                -- Built-in LSP document highlighting (replaces vim-illuminate)
+                vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+                    buffer = event.buf,
+                    callback = vim.lsp.buf.document_highlight,
+                })
+                vim.api.nvim_create_autocmd("CursorMoved", {
+                    buffer = event.buf,
+                    callback = vim.lsp.buf.clear_references,
+                })
             end,
         })
-
-        local lsp_capabilities = require("cmp_nvim_lsp").default_capabilities()
 
         require("mason").setup({})
         require("mason-lspconfig").setup({
             ensure_installed = { "lua_ls" },
-            handlers = {
-                function(server_name)
-                    require("lspconfig")[server_name].setup({
-                        capabilities = lsp_capabilities,
-                    })
-                end,
-                lua_ls = function()
-                    require("lspconfig").lua_ls.setup({
-                        capabilities = lsp_capabilities,
-                        settings = {
-                            Lua = {
-                                runtime = {
-                                    version = "LuaJIT",
-                                },
-                                diagnostics = {
-                                    globals = { "vim" },
-                                },
-                                workspace = {
-                                    library = {
-                                        vim.env.VIMRUNTIME,
-                                    },
-                                },
-                            },
+        })
+
+        local lsp_capabilities = require("blink.cmp").get_lsp_capabilities()
+
+        if vim.fn.has("nvim-0.11") == 0 then
+            -- 0.10 fallback: use lspconfig
+            local lspconfig = require("lspconfig")
+            for _, server_name in ipairs(require("mason-lspconfig").get_installed_servers()) do
+                if server_name ~= "lua_ls" then
+                    lspconfig[server_name].setup({ capabilities = lsp_capabilities })
+                end
+            end
+            lspconfig.lua_ls.setup({
+                capabilities = lsp_capabilities,
+                settings = {
+                    Lua = {
+                        runtime = { version = "LuaJIT" },
+                        diagnostics = { globals = { "vim" } },
+                        workspace = {
+                            library = { vim.env.VIMRUNTIME },
+                            checkThirdParty = false,
                         },
-                    })
-                end,
-            },
+                        telemetry = { enable = false },
+                    },
+                },
+            })
+        else
+            -- 0.11+: native API, forward compatible
+            vim.lsp.config("*", { capabilities = lsp_capabilities })
+            vim.lsp.config("lua_ls", {
+                settings = {
+                    Lua = {
+                        runtime = { version = "LuaJIT" },
+                        diagnostics = { globals = { "vim" } },
+                        workspace = {
+                            library = { vim.env.VIMRUNTIME },
+                            checkThirdParty = false,
+                        },
+                        telemetry = { enable = false },
+                    },
+                },
+            })
+            for _, server_name in ipairs(require("mason-lspconfig").get_installed_servers()) do
+                vim.lsp.enable(server_name)
+            end
+        end
+
+        vim.diagnostic.config({
+            virtual_text = true,
+            signs = true,
+            underline = true,
+            update_in_insert = false,
+            severity_sort = true,
+            float = { border = "rounded" },
         })
 
-        local cmp = require("cmp")
-        local cmp_select = { behavior = cmp.SelectBehavior.Select }
-
-        cmp.setup({
-            sources = {
-                { name = "path" },
-                { name = "nvim_lsp" },
-                { name = "luasnip", keyword_length = 2 },
-                { name = "buffer",  keyword_length = 3 },
-            },
-            mapping = cmp.mapping.preset.insert({
-                ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-                ["<C-f>"] = cmp.mapping.scroll_docs(4),
-                ["<C-p>"] = cmp.mapping.select_prev_item(cmp_select),
-                ["<C-n>"] = cmp.mapping.select_next_item(cmp_select),
-                ["<C-Space>"] = cmp.mapping.complete(),
-                ["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-            }),
-            snippet = {
-                expand = function(args)
-                    require("luasnip").lsp_expand(args.body)
-                end,
-            },
-        })
+        require("fidget").setup({})
     end,
 }

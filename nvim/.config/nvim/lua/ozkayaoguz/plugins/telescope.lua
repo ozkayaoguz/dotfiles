@@ -1,7 +1,7 @@
 return {
     {
         "nvim-telescope/telescope.nvim",
-        branch = '0.1.x',
+        branch = "master",
         dependencies = {
             "nvim-lua/plenary.nvim",
         },
@@ -20,12 +20,18 @@ return {
         build = "make",
         config = function()
             require("telescope").setup({
+                defaults = {
+                    layout_strategy = "vertical",
+                },
                 extensions = {
                     fzf = {
                         fuzzy = true,
                         override_generic_sorter = true,
                         override_file_sorter = true,
                         case_mode = "smart_case",
+                    },
+                    ["ui-select"] = {
+                        require("telescope.themes").get_dropdown({}),
                     },
                 },
             })
@@ -36,19 +42,6 @@ return {
     {
         "nvim-telescope/telescope-ui-select.nvim",
         config = function()
-            require("telescope").setup({
-                defaults = {
-                    layout_strategy = "vertical",
-                },
-                extensions = {
-                    ["ui-select"] = {
-                        require("telescope.themes").get_dropdown({
-                            -- even more opts
-                        }),
-                    },
-                },
-            })
-
             require("telescope").load_extension("ui-select")
         end,
     },
