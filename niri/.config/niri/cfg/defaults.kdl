@@ -2,6 +2,7 @@ environment {
     DF_TERMINAL "alacritty"
     DF_FILE_MANAGER "nautilus"
     DF_BROWSER "firefox"
+    DF_CALCULATOR "gnome-calculator"
     DF_APP_LAUNCHER "dms ipc call spotlight toggle"
     DF_SCREEN_LOCK "dms ipc call lock lock"
     DF_TASK_MENU "dms ipc call processlist focusOrToggle"

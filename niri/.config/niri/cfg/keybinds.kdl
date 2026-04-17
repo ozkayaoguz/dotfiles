@@ -158,6 +158,9 @@ binds {
     Mod+X hotkey-overlay-title="Power Menu" {
         spawn-sh "$DF_POWER_MENU ";
     }
+    XF86Calculator hotkey-overlay-title="Calculator" {
+        spawn-sh "$DF_CALCULATOR ";
+    }
 
     Mod+Alt+L hotkey-overlay-title="Lock Screen" {
         spawn-sh "$DF_SCREEN_LOCK";
